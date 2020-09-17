@@ -1,0 +1,97 @@
+
+//declaring variable and endpoint
+let baseImgPath = "https://image.tmdb.org/t/p/w185_and_h278_bestv2";
+let movieid;
+let imglink;
+let img;
+let movieobj;
+let movietitle;
+let movieDiv1;
+
+
+const apiEndPoint= "https://api.themoviedb.org/3/movie/now_playing?api_key=aac298f2b13de3b498a0d8d9a2d2629a&language=en-US&page=1";
+
+//creating object reference for XMLHttpRequest
+const xhr= new XMLHttpRequest();
+
+
+  xhr.open("GET",apiEndPoint);
+  //sending the GET request to the server
+  xhr.send();
+
+//calling the function if response is ready
+  xhr.addEventListener("readystatechange",getMovie)
+ 
+/*this function will get the value from json response and will create the attribute dynamically to design home page
+*/
+function getMovie(){
+  
+  if(xhr.readyState === 4 && xhr.status === 200) 
+  {   
+
+    
+    movieobj = JSON.parse(xhr.responseText);
+    
+    
+    for(let i=0; i<movieobj.results.length; i++)
+      {
+      
+      movieDiv1 = document.createElement("div");
+      movieDiv1.setAttribute('class','image_content');
+      container.appendChild(movieDiv1);
+
+      movieid =movieobj.results[i].id;
+
+      imglink= document.createElement("a");
+      imglink.setAttribute("href","https://www.themoviedb.org/movie/"+movieid+"-"+movieobj.results[i].title);
+      movieDiv1.appendChild(imglink);
+
+      img= document.createElement("img");
+      img.setAttribute("src",baseImgPath + movieobj.results[i].poster_path);
+      img.setAttribute('data-toggle', 'tooltip');
+      img.setAttribute('title', movieobj.results[i].title);
+      //movieDiv1.appendChild(img);
+      imglink.appendChild(img);
+      
+     //Movie contents
+      let movieDiv2 = document.createElement("div");
+      movieDiv2.setAttribute('id','div2');
+      container.appendChild(movieDiv2);
+
+     //Fetch Vote average in a paragraph
+      let vote_average= document.createElement("div"); 
+      vote_average.setAttribute("src",movieobj.results[i].vote_average);
+      vote_average.setAttribute('id','vote');
+      vote_average.innerHTML=movieobj.results[i].vote_average*10 +`%`;
+      movieDiv2.appendChild(vote_average); 
+
+     //Fetch Movie title in Heading2
+      movietitle= document.createElement("h2"); 
+      movietitle.setAttribute("src",movieobj.results[i].title);
+      movietitle.setAttribute('id','title');
+      movietitle.innerHTML=movieobj.results[i].title ;
+      movieDiv2.appendChild(movietitle); 
+
+     //Fetch Release Date in Paragraph
+      let movierelease_date= document.createElement("p"); 
+      movierelease_date.setAttribute("src",movieobj.results[i].release_date);
+      movierelease_date.innerHTML=movieobj.results[i].release_date;
+      movieDiv2.appendChild(movierelease_date); 
+
+     //Fetch Movie Overview in Paragraph
+      let movieoverview= document.createElement("p"); 
+      movieoverview.setAttribute("src",movieobj.results[i].overview);
+      movieoverview.setAttribute('id','overview');
+      movieoverview.innerHTML=movieobj.results[i].overview;
+      movieDiv2.appendChild(movieoverview); 
+
+    //Adding more information
+      let infobutton= document.createElement("input");
+      infobutton.setAttribute("type","button");
+      infobutton.setAttribute("value","More info");
+      movieDiv2.appendChild(infobutton); 
+     
+      }
+    }
+  };
+
